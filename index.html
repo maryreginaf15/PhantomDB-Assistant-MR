@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhantomDB Assistant - Automação & Inteligência de Dados</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/logo.png" alt="PhantomDB Assistant Logo">
+                <span>PhantomDB Assistant</span>
+            </div>
+            <nav id="nav-links">
+                <button id="btn-login-trigger" class="btn-primary">Entrar</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Landing Page Section -->
+    <section id="landing-section" class="section">
+        <div class="container hero">
+            <h1 class="hero-title">Conecte seu Banco de Dados ao Futuro</h1>
+            <p class="hero-subtitle">Análise inteligente, automação de chat e insights em segundos. Tudo em um só lugar.</p>
+            <div class="hero-actions">
+                <button class="btn-primary btn-lg" onclick="showLogin()">Começar Agora</button>
+            </div>
+        </div>
+
+        <div class="container faq-section">
+            <h2 class="section-title">Por que escolher o PhantomDB Assistant?</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3><i data-lucide="help-circle"></i> O que é o PhantomDB Assistant?</h3>
+                    <p>É uma plataforma que transforma dados brutos em conversas inteligentes, facilitando a consulta e gestão de informações.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i data-lucide="check-circle"></i> Quais as principais funcionalidades?</h3>
+                    <p>Consultas seguras via chat, edição dinâmica de dados, gestão de usuários administrativa e suporte a múltiplos formatos (CSV, SQL, Excel).</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i data-lucide="shield"></i> Meus dados estão seguros?</h3>
+                    <p>Sim! O sistema bloqueia comandos destrutivos e garante que apenas consultas autorizadas sejam realizadas.</p>
+                </div>
+                <div class="faq-item">
+                    <h3><i data-lucide="user-plus"></i> Quem pode usar?</h3>
+                    <p>Desde gestores escolares até administradores de banco de dados que buscam agilidade e controle total.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section id="login-section" class="section hidden">
+        <div class="login-nav">
+            <button class="btn-icon-plain" onclick="showSection('landing-section')">
+                <i data-lucide="home"></i> Home
+            </button>
+            <span class="app-name-top">PhantomDB Assistant</span>
+        </div>
+        <div class="login-split-container">
+            <div class="login-brand-side">
+                <img src="assets/logo.png" alt="PhantomDB Assistant Logo">
+                <h2>PhantomDB Assistant</h2>
+                <p>O poder dos dados na palma da sua mão.</p>
+            </div>
+            <div class="login-form-side">
+                <div class="login-form-wrapper">
+                    <h2>Bem-vindo</h2>
+                    <p>Acesse sua conta para continuar</p>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" placeholder="seu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Senha</label>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </div>
+                        <p id="login-error" class="error-msg hidden">E-mail ou senha incorretos.</p>
+                        <button type="submit" class="btn-primary btn-block">Entrar</button>
+                        <a href="#" class="forgot-password" onclick="showForgotPassword()">Esqueci minha senha</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forgot Password Section -->
+    <section id="forgot-password-section" class="section hidden">
+        <div class="login-card-small">
+            <button class="btn-icon-plain" onclick="showLogin()" style="margin-bottom: 20px;">
+                <i data-lucide="arrow-left"></i> Voltar
+            </button>
+            <h2>Recuperar Senha</h2>
+            <p>Insira seu e-mail para receber as instruções.</p>
+            <form id="forgot-form">
+                <div class="form-group">
+                    <label for="forgot-email">E-mail</label>
+                    <input type="email" id="forgot-email" placeholder="seu@email.com" required>
+                </div>
+                <button type="submit" class="btn-primary btn-block">Enviar Link</button>
+            </form>
+            <div id="forgot-success-box" class="success-box hidden">
+                <i data-lucide="check-circle"></i>
+                <p>Link enviado com sucesso! Verifique seu e-mail.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- App / Dashboard Section -->
+    <section id="app-section" class="section hidden">
+        <header class="app-header">
+            <div class="app-logo">
+                <img src="assets/logo.png" alt="PhantomDB Assistant">
+                <span>PhantomDB Assistant</span>
+            </div>
+            <div class="user-profile-menu">
+                <div class="user-info-trigger" id="profile-trigger">
+                    <span id="header-user-name">Admin</span>
+                    <div class="avatar"><i data-lucide="user"></i></div>
+                </div>
+                <div class="profile-dropdown hidden" id="profile-dropdown">
+                    <div class="dropdown-header">
+                        <strong id="dropdown-user-name">Administrador</strong>
+                        <span id="dropdown-user-email">admin@bdchat.com</span>
+                    </div>
+                    <div class="dropdown-content">
+                        <button onclick="showView('account')"><i data-lucide="settings"></i> Editar Perfil</button>
+                        <button onclick="logout()"><i data-lucide="log-out"></i> Sair</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="app-container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-buttons">
+                    <button id="btn-show-dashboard" class="sidebar-btn active">
+                        <i data-lucide="edit-3"></i> Alteração de Dados
+                    </button>
+                    <button id="btn-show-chat" class="sidebar-btn">
+                        <i data-lucide="message-square"></i> Chatbot
+                    </button>
+                    <button id="btn-show-account" class="sidebar-btn">
+                        <i data-lucide="user"></i> Conta
+                    </button>
+                    <button id="btn-show-add-db" class="sidebar-btn">
+                        <i data-lucide="plus-circle"></i> Adicionar BD
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="content-area">
+                <!-- Alteração de Dados View -->
+                <div id="view-dashboard" class="view">
+                    <div class="view-header">
+                        <h1>Alteração de Dados</h1>
+                        <div class="header-actions">
+                            <button class="btn-outline btn-sm" onclick="triggerReload()">
+                                <i data-lucide="refresh-cw"></i> Recarregar BD
+                            </button>
+                            <button class="btn-primary btn-sm" onclick="openAddStudentModal()">
+                                <i data-lucide="plus"></i> Adicionar Novo
+                            </button>
+                            <div class="color-picker-container">
+                                <label>Cor:</label>
+                                <input type="color" id="accent-color-picker" value="#00f3ff">
+                            </div>
+                        </div>
+                    </div>
+                    <input type="file" id="reload-file-input" class="hidden" accept=".csv, .xlsx">
+                    <div class="data-table-container">
+                        <table id="students-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Status</th>
+                                    <th>Início</th>
+                                    <th>Término</th>
+                                    <th>Faltas</th>
+                                    <th>CPF</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-body">
+                                <!-- Dados inseridos via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Add BD Template View -->
+                <div id="view-add-db" class="view hidden">
+                    <div class="view-header">
+                        <h1>Adicionar Banco de Dados</h1>
+                    </div>
+                    <div class="upload-template">
+                        <div class="upload-box">
+                            <i data-lucide="upload-cloud" size="48"></i>
+                            <h3>Arraste seu arquivo aqui</h3>
+                            <p>Formatos suportados: .csv, .xlsx, .sql</p>
+                            <button class="btn-primary">Selecionar Arquivo</button>
+                        </div>
+                        <div class="db-connections-grid">
+                            <div class="db-card">
+                                <i data-lucide="database"></i>
+                                <h4>MySQL Connection</h4>
+                                <button class="btn-outline btn-sm">Conectar</button>
+                            </div>
+                            <div class="db-card">
+                                <i data-lucide="database"></i>
+                                <h4>PostgreSQL</h4>
+                                <button class="btn-outline btn-sm">Conectar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat View -->
+                <div id="view-chat" class="view hidden">
+                    <div class="chat-window">
+                        <div class="chat-header">
+                            <h3>BDCHAT Assistant</h3>
+                        </div>
+                        <div id="chat-messages" class="chat-messages">
+                            <!-- Mensagens -->
+                        </div>
+                        <div id="typing-indicator" class="typing hidden">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Digite sua pergunta (ex: quem é Ana Silva?)...">
+                            <button id="btn-send-chat" class="btn-icon"><i data-lucide="send"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account View -->
+                <div id="view-account" class="view hidden">
+                    <div class="view-header">
+                        <h1>Minha Conta</h1>
+                    </div>
+                    <div class="account-grid">
+                        <div class="account-card">
+                            <h3>Perfil Pessoal</h3>
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input type="text" value="Administrador" id="acc-name">
+                            </div>
+                            <div class="form-group">
+                                <label>E-mail</label>
+                                <input type="email" value="admin@bdchat.com" id="acc-email">
+                            </div>
+                            <div class="form-group">
+                                <label>Senha</label>
+                                <input type="password" value="123456" id="acc-pass">
+                            </div>
+                            <button class="btn-primary" onclick="updatePersonalProfile()">Salvar Perfil</button>
+                        </div>
+                        
+                        <div class="admin-control-card">
+                            <div class="admin-card-header">
+                                <h3>Controle de Usuários (Admin de BD)</h3>
+                                <button class="btn-primary btn-sm" onclick="openAddUserModal()">
+                                    <i data-lucide="user-plus"></i> Novo Usuário
+                                </button>
+                            </div>
+                            <p>Gerencie permissões e contas do sistema.</p>
+                            <div class="user-management-list" id="admin-user-list">
+                                <!-- Lista de usuários via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- Modal para Edição de Usuários (Admin) -->
+    <div id="admin-user-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Gerenciar Usuário</h2>
+            <form id="admin-user-form">
+                <input type="hidden" id="admin-edit-id">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="admin-edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="admin-edit-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha Provisória</label>
+                    <input type="text" id="admin-edit-pass" placeholder="Defina uma senha">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-outline" onclick="closeAdminModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Edição de Alunos -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Editar Aluno</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" id="edit-nome">
+                </div>
+                <div class="form-group">
+                    <label>CPF</label>
+                    <input type="text" id="edit-cpf" placeholder="000.000.000-00">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data de Início</label>
+                        <input type="date" id="edit-data-inicio">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Término</label>
+                        <input type="date" id="edit-data-termino">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ano Matrícula</label>
+                        <input type="number" id="edit-ano">
+                    </div>
+                    <div class="form-group">
+                        <label>Faltas</label>
+                        <input type="number" id="edit-faltas">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-outline" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
