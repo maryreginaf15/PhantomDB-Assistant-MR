@@ -1,6 +1,6 @@
-PhantomDB Assistant
+##PhantomDB Assistant
 
-## (tela de login e senha )
+** (tela de login e senha )
 
 Este projeto simula um sistema de login utilizando apenas front-end ou seja login e senha são FICTÍCIOS e não reais, não expondo nenhum dados sensível!! 
 
